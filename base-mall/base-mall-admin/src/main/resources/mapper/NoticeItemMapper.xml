@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.NoticeItemMapper">
+
+	<resultMap id="noticeItemMap" type="com.joolun.cloud.mall.common.entity.NoticeItem">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="noticeId" column="notice_id"/>
+		<result property="type" column="type"/>
+		<result property="name" column="name"/>
+		<result property="url" column="url"/>
+		<result property="page" column="page"/>
+		<result property="content" column="content"/>
+		<result property="tag" column="tag"/>
+		<result property="enable" column="enable"/>
+		<result property="sort" column="sort"/>
+	</resultMap>
+
+	<sql id="noticeItemSql">
+		obj.`id`,
+		obj.`tenant_id`,
+		obj.`del_flag`,
+		obj.`create_time`,
+		obj.`update_time`,
+		obj.`create_id`,
+		obj.`notice_id`,
+		obj.`type`,
+		obj.`name`,
+		obj.`url`,
+		obj.`page`,
+		obj.`content`,
+		obj.`tag`,
+		obj.`enable`,
+		obj.`sort`
+	</sql>
+
+	<!---->
+	<select id="selectList2" resultMap="noticeItemMap">
+		SELECT
+		<include refid="noticeItemSql"/>
+		FROM notice_item obj
+		<where>
+			<if test="query.noticeId != null">
+				AND obj.`notice_id` = #{query.noticeId}
+			</if>
+			<if test="query.enable != null">
+				AND obj.`enable` = #{query.enable}
+			</if>
+		</where>
+		ORDER BY obj.`sort` ASC
+	</select>
+</mapper>

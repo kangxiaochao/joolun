@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.CouponUserMapper">
+
+	<resultMap id="couponUserMap" type="com.joolun.cloud.mall.common.entity.CouponUser">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="couponId" column="coupon_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="couponCode" column="coupon_code"/>
+		<result property="status" column="status"/>
+		<result property="usedTime" column="used_time"/>
+		<result property="validBeginTime" column="valid_begin_time"/>
+		<result property="validEndTime" column="valid_end_time"/>
+		<result property="name" column="name"/>
+		<result property="type" column="type"/>
+		<result property="premiseAmount" column="premise_amount"/>
+		<result property="reduceAmount" column="reduce_amount"/>
+		<result property="discount" column="discount"/>
+		<result property="suitType" column="suit_type"/>
+	</resultMap>
+
+	<resultMap id="couponUserMap1" extends="couponUserMap" type="com.joolun.cloud.mall.common.entity.CouponUser">
+		<collection property="userInfo" ofType="com.joolun.cloud.mall.common.entity.UserInfo"
+					select="com.joolun.cloud.mall.admin.mapper.UserInfoMapper.selectById"
+					column="{id=user_id}">
+		</collection>
+	</resultMap>
+
+	<resultMap id="couponUserMap2" extends="couponUserMap" type="com.joolun.cloud.mall.common.entity.CouponUser">
+		<result property="goodsSpu.id" column="spu_id"/>
+	</resultMap>
+
+	<sql id="couponUserSql">
+		distinct coupon_user.`id`,
+		coupon_user.`tenant_id`,
+		coupon_user.`del_flag`,
+		coupon_user.`create_time`,
+		coupon_user.`update_time`,
+		coupon_user.`create_id`,
+		coupon_user.`coupon_id`,
+		coupon_user.`user_id`,
+		coupon_user.`coupon_code`,
+		coupon_user.`valid_begin_time`,
+		coupon_user.`valid_end_time`,
+		coupon_user.`status`,
+		coupon_user.`used_time`,
+		coupon_user.`name`,
+		coupon_user.`type`,
+		coupon_user.`premise_amount`,
+		coupon_user.`reduce_amount`,
+		coupon_user.`discount`,
+		coupon_user.`suit_type`
+	</sql>
+
+	<select id="selectPage1" resultMap="couponUserMap1">
+		SELECT
+		<include refid="couponUserSql"/>
+		FROM coupon_user coupon_user
+		<where>
+			<if test="query.userId != null">
+				AND coupon_user.`user_id` = #{query.userId}
+			</if>
+			<if test="query.couponId != null">
+				AND coupon_user.`coupon_id` = #{query.couponId}
+			</if>
+			<if test='query.status == "0"'>
+				AND coupon_user.`status` = '0'
+				AND coupon_user.`valid_end_time` > now()
+			</if>
+			<if test='query.status == "1"'>
+				AND coupon_user.`status` = '1'
+			</if>
+			<if test='query.status == "2"'>
+				AND coupon_user.`status` = '0'
+				AND now() > coupon_user.`valid_end_time`
+			</if>
+			<if test="query.couponCode != null">
+				AND coupon_user.`coupon_code` = #{query.couponCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectPage2" resultMap="couponUserMap2">
+		SELECT
+			<include refid="couponUserSql"/>
+			<if test="query.spuIds != null">
+				,coupon_goods.`spu_id`
+			</if>
+			<if test="query.spuIds == null">
+				,null `spu_id`
+			</if>
+		FROM coupon_user coupon_user
+		<if test="query.spuIds != null">
+			LEFT JOIN coupon_info coupon_info
+				ON coupon_user.`coupon_id` = coupon_info.`id`
+			LEFT JOIN coupon_goods coupon_goods
+				ON coupon_info.`id` = coupon_goods.`coupon_id`
+		</if>
+		<where>
+			<if test="query.userId != null">
+				AND coupon_user.`user_id` = #{query.userId}
+			</if>
+			<if test='query.status == "0"'>
+				AND coupon_user.`status` = '0'
+				AND coupon_user.`valid_end_time` > now()
+			</if>
+			<if test='query.status == "1"'>
+				AND coupon_user.`status` = '1'
+			</if>
+			<if test='query.status == "2"'>
+				AND coupon_user.`status` = '0'
+				AND now() > coupon_user.`valid_end_time`
+			</if>
+			<if test="query.spuIds != null">
+				AND (
+					coupon_user.`suit_type` = '1'
+					OR (
+					coupon_user.`suit_type` = '2'
+					AND coupon_goods.`spu_id` IN
+					<foreach item="item" index="index" collection="query.spuIds" open="(" separator="," close=")">
+						#{item}
+					</foreach>
+					)
+				)
+				AND coupon_user.`status` = '0'
+				AND coupon_user.`valid_end_time` > now()
+				AND now() > coupon_user.`valid_begin_time`
+			</if>
+		</where>
+	</select>
+</mapper>

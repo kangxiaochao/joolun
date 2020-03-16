@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.joolun.cloud.common.core.config.JacksonConfig,\
+  com.joolun.cloud.common.core.config.MessageSourceConfig,\
+  com.joolun.cloud.common.core.config.RestTemplateConfig,\
+  com.joolun.cloud.common.core.util.SpringContextHolder,\
+  com.joolun.cloud.common.core.config.HomeDirConfigProperties
+

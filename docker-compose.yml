@@ -1,0 +1,88 @@
+# 使用说明
+# 1. 使用docker-compose  不需要配置hosts
+# 2. 根目录docker-compose up
+# 3. 等待服务启动
+
+version: '2'
+services:
+  base-mysql:
+    build:
+      context: ./
+      dockerfile: ./db/Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    container_name: base-mysql
+    image: base-mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./base-mysql:/var/lib/mysql
+    command: --lower_case_table_names=1
+
+  base-redis:
+    image: redis:5.0.4
+    restart: always
+    container_name: base-redis
+    ports:
+      - 6379:6379
+
+  base-nacos:
+    build:
+      context: ./
+      dockerfile: ./base-nacos/Dockerfile
+    restart: always
+    container_name: base-nacos
+    image: base-nacos
+    ports:
+      - 8848:8848
+
+  base-gateway:
+    build:
+      context: ./
+      dockerfile: ./base-gateway/Dockerfile
+    restart: always
+    container_name: base-gateway
+    image: base-gateway
+    ports:
+      - 9999:9999
+
+  base-auth:
+    build:
+      context: ./
+      dockerfile: ./base-auth/Dockerfile
+    restart: always
+    container_name: base-auth
+    image: base-auth
+
+  base-upms:
+    build:
+      context: ./
+      dockerfile: ./base-upms/base-upms-admin/Dockerfile
+    restart: always
+    container_name: base-upms
+    image: base-upms
+
+  base-weixin:
+    build:
+      context: ./
+      dockerfile: ./base-weixin/base-weixin-admin/Dockerfile
+    restart: always
+    container_name: base-weixin
+    image: base-weixin
+
+  base-mall:
+    build:
+      context: ./
+      dockerfile: ./base-mall/base-mall-admin/Dockerfile
+    restart: always
+    container_name: base-mall
+    image: base-mall
+
+  base-codegen:
+    build:
+      context: ./
+      dockerfile: ./base-codegen/Dockerfile
+    restart: always
+    image: base-codegen
+    container_name: base-codegen

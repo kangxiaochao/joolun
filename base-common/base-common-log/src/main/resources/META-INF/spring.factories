@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.joolun.cloud.common.log.LogAutoConfiguration
+org.springframework.context.ApplicationContextInitializer=\
+    com.joolun.cloud.common.log.init.ApplicationLoggerInitializer

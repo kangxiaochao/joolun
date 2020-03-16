@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.joolun</groupId>
+		<artifactId>joolun</artifactId>
+		<version>2.6.0</version>
+	</parent>
+
+	<artifactId>base-lianghao</artifactId>
+	<packaging>jar</packaging>
+
+	<description>靓号管理模块</description>
+
+	<dependencies>
+		<!--注册中心客户端-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!--配置中心客户端-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+		<!--mybatis-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!--common-->
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-data</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-core</artifactId>
+		</dependency>
+		<!--swagger-->
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-swagger</artifactId>
+		</dependency>
+		<!--安全模块-->
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-log</artifactId>
+		</dependency>
+
+		<!--web 模块-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!--undertow容器-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+		<!-- druid 连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+		</dependency>
+		<!--ExcelKit依赖-->
+		<dependency>
+			<groupId>com.wuwenze</groupId>
+			<artifactId>ExcelKit</artifactId>
+			<version>2.0.72</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

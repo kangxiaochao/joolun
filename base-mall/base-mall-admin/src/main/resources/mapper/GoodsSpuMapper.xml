@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.GoodsSpuMapper">
+	<resultMap id="goodsSpuMap" type="com.joolun.cloud.mall.common.entity.GoodsSpu">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="spuCode" column="spu_code"/>
+		<result property="name" column="name"/>
+		<result property="sellPoint" column="sell_point"/>
+		<result property="description" column="description"/>
+		<result property="categoryFirst" column="category_first"/>
+		<result property="categorySecond" column="category_second"/>
+		<result property="picUrls" column="pic_urls"/>
+		<result property="shelf" column="shelf"/>
+		<result property="sort" column="sort"/>
+		<result property="phoneSystem" column="phone_system"/>
+		<result property="lowDissipation" column="low_dissipation"/>
+		<result property="priceDown" column="price_down"/>
+		<result property="priceUp" column="price_up"/>
+		<result property="saleNum" column="sale_num"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="specType" column="spec_type"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="pointsGiveSwitch" column="points_give_switch"/>
+		<result property="pointsGiveNum" column="points_give_num"/>
+		<result property="pointsDeductSwitch" column="points_deduct_switch"/>
+		<result property="pointsDeductScale" column="points_deduct_scale"/>
+		<result property="pointsDeductAmount" column="points_deduct_amount"/>
+		<result property="operatorId" column="operator_id"/>
+		<result property="operatorName" column="operator_name"/>
+		<result property="packageId" column="package_id"/>
+		<result property="packageName" column="package_name"/>
+		<result property="attributionProvince" column="attribution_province"/>
+		<result property="attributionCity" column="attribution_city"/>
+		<result property="freightTemplatId" column="freight_templat_id"/>
+	</resultMap>
+
+	<resultMap id="goodsSpuMap2" extends="goodsSpuMap" type="com.joolun.cloud.mall.common.entity.GoodsSpu">
+		<collection property="skus" ofType="com.joolun.cloud.mall.common.entity.GoodsSku"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSkuMapper.listGoodsSkuBySpuId"
+					column="{spuId=id}">
+		</collection>
+		<collection property="freightTemplat" ofType="com.joolun.cloud.mall.common.entity.FreightTemplat"
+					select="com.joolun.cloud.mall.admin.mapper.FreightTemplatMapper.selectById"
+					column="{id=freight_templat_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="goodsSpuSql">
+		spu.`id`,
+		spu.`tenant_id`,
+		spu.`spu_code`,
+		spu.`name`,
+		spu.`sell_point`,
+		spu.`description`,
+		spu.`category_first`,
+		spu.`category_second`,
+		spu.`pic_urls`,
+		spu.`shelf`,
+		spu.`sort`,
+		spu.`phone_system`,
+		spu.`low_dissipation`,
+		spu.`price_down`,
+		spu.`price_up`,
+		spu.`sale_num`,
+		spu.`create_time`,
+		spu.`update_time`,
+		spu.`spec_type`,
+		spu.`del_flag`,
+		spu.`points_give_switch`,
+		spu.`points_give_num`,
+		spu.`points_deduct_switch`,
+		spu.`points_deduct_scale`,
+		spu.`points_deduct_amount`,
+		spu.`operator_id`,
+		spu.`operator_name`,
+		spu.`package_id`,
+		spu.`package_name`,
+		spu.`attribution_province`,
+		spu.`attribution_city`,
+		spu.`process_id`,
+		spu.`process_name`,
+		spu.`freight_templat_id`
+	</sql>
+
+	<!--重写selectById关联查询其它表-->
+	<select id="selectById2" resultMap="goodsSpuMap2">
+		SELECT
+		<include refid="goodsSpuSql"/>
+		FROM goods_spu spu
+		WHERE spu.`id` = #{id}
+	</select>
+
+<!--	<select id="selectOneByShoppingCart" resultMap="goodsSpuMap">-->
+<!--		SELECT-->
+<!--		<include refid="goodsSpuSql"/>-->
+<!--		FROM goods_spu spu-->
+<!--		WHERE spu.`id` = #{id}-->
+<!--	</select>-->
+
+	<select id="selectGoodsSpuPage" resultMap="goodsSpuMap">
+		SELECT
+		<include refid="goodsSpuSql"/>
+		FROM
+			goods_spu spu left join  goods_sku sku on spu.id = sku.spu_id
+		WHERE
+			spu.`shelf` = '1'
+		and
+			sku.seckill_status = '0'
+		and
+			sku.`stock` >= 1
+		and
+			spu.name like CONCAT('%',#{name},'%')
+			<if test="categorySecond != null and categorySecond != ''">
+				and spu.category_second = #{categorySecond}
+			</if>
+			<if test="tenantId != null and tenantId != ''">
+				and spu.tenant_id = #{tenantId}
+			</if>
+			<if test="phoneSystem != null and phoneSystem != ''">
+				and spu.phone_system = #{phoneSystem}
+			</if>
+			<if test="lowDissipation != null and lowDissipation != ''">
+				and spu.low_dissipation = #{lowDissipation}
+			</if>
+			<if test="sortField != null and sortField != ''">
+				order  by ${sortField} desc
+			</if>
+			<if test="total != null and size !=  null">
+				limit ${total},${size}
+			</if>
+
+	</select>
+
+	<resultMap id="goodsSpuMap3" extends="goodsSpuMap" type="com.joolun.cloud.mall.common.entity.GoodsSpu">
+		<collection property="freightTemplat" ofType="com.joolun.cloud.mall.common.entity.FreightTemplat"
+					select="com.joolun.cloud.mall.admin.mapper.FreightTemplatMapper.selectById"
+					column="{id=freight_templat_id}">
+		</collection>
+	</resultMap>
+
+	<resultMap id="goodsSpuMap4" extends="goodsSpuMap" type="com.joolun.cloud.mall.common.entity.GoodsSpu">
+		<collection property="freightTemplat" ofType="com.joolun.cloud.mall.common.entity.FreightTemplat"
+					select="com.joolun.cloud.mall.admin.mapper.FreightTemplatMapper.selectById"
+					column="{id=freight_templat_id}">
+		</collection>
+	</resultMap>
+
+
+	<sql id="goodsSpuSql2">
+		goods_spu.`id`,
+		goods_spu.`tenant_id`,
+		goods_spu.`spu_code`,
+		goods_spu.`name`,
+		goods_spu.`sell_point`,
+		null `description`,
+		goods_spu.`category_first`,
+		goods_spu.`category_second`,
+		goods_spu.`pic_urls`,
+		goods_spu.`shelf`,
+		goods_spu.`sort`,
+		goods_spu.`phone_system`,
+		goods_spu.`low_dissipation`,
+		goods_spu.`price_down`,
+		goods_spu.`price_up`,
+		goods_spu.`sale_num`,
+		goods_spu.`create_time`,
+		goods_spu.`update_time`,
+		goods_spu.`spec_type`,
+		goods_spu.`del_flag`,
+		goods_spu.`points_give_switch`,
+		goods_spu.`points_give_num`,
+		goods_spu.`points_deduct_switch`,
+		goods_spu.`points_deduct_scale`,
+		goods_spu.`points_deduct_amount`,
+		goods_spu.`operator_id`,
+		goods_spu.`operator_name`,
+		goods_spu.`package_id`,
+		goods_spu.`package_name`,
+		goods_spu.`attribution_province`,
+		goods_spu.`attribution_city`,
+		goods_spu.`process_id`,
+		goods_spu.`process_name`,
+		goods_spu.`freight_templat_id`
+	</sql>
+
+	<select id="selectPage1" resultMap="goodsSpuMap">
+		SELECT
+		<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		<where>
+			<if test="query.shelf != null">
+				AND goods_spu.`shelf` = #{query.shelf}
+			</if>
+			<if test="query.categorySecond != null">
+				AND goods_spu.`category_second` = #{query.categorySecond}
+			</if>
+			<if test="query.name != null">
+				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
+			</if>
+			<if test="query.spuCode != null">
+				AND goods_spu.`spu_code` = #{query.spuCode}
+			</if>
+			<if test="query.specType != null">
+				AND goods_spu.`spec_type` = #{query.specType}
+			</if>
+			<if test="query.pointsGiveSwitch != null">
+				AND goods_spu.`points_give_switch` = #{query.pointsGiveSwitch}
+			</if>
+			<if test="query.pointsDeductSwitch != null">
+				AND goods_spu.`points_deduct_switch` = #{query.pointsDeductSwitch}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="selectOneByShoppingCart" resultMap="goodsSpuMap3">
+		SELECT
+			<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+
+	<select id="selectListByCouponId" resultMap="goodsSpuMap">
+		SELECT
+			<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		LEFT JOIN coupon_goods coupon_goods
+		ON goods_spu.`id` = coupon_goods.`spu_id`
+		WHERE coupon_goods.`coupon_id` = #{couponId}
+	</select>
+
+	<select id="selectPage2" resultMap="goodsSpuMap3">
+		SELECT
+		<include refid="goodsSpuSql2"/>
+		FROM goods_spu goods_spu
+		<if test='query2.couponId != null and query3.suitType == "2"'>
+			LEFT JOIN coupon_goods coupon_goods
+			ON goods_spu.`id` = coupon_goods.`spu_id`
+		</if>
+		<where>
+			<if test="query.shelf != null">
+				AND goods_spu.`shelf` = #{query.shelf}
+			</if>
+			<if test="query.categorySecond != null">
+				AND goods_spu.`category_second` = #{query.categorySecond}
+			</if>
+			<if test="query.name != null">
+				AND goods_spu.`name` LIKE CONCAT('%',#{query.name},'%')
+			</if>
+			<if test='query2.couponId != null and query3.suitType == "2"'>
+				AND coupon_goods.`coupon_id` = #{query2.couponId}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectById4" resultMap="goodsSpuMap4">
+		SELECT
+		<include refid="goodsSpuSql"/>
+		FROM goods_spu goods_spu
+		WHERE goods_spu.`id` = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.GoodsSkuSpecValueMapper">
+
+	<resultMap id="goodsSkuSpecValueMap" type="com.joolun.cloud.mall.common.entity.GoodsSkuSpecValue">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="skuId" column="sku_id"/>
+		<result property="specValueId" column="spec_value_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+
+	<resultMap id="goodsSkuSpecValueMap2" extends="goodsSkuSpecValueMap" type="com.joolun.cloud.mall.common.entity.GoodsSkuSpecValue">
+		<result property="specId" column="spec_id"/>
+		<result property="specValueName" column="spec_value_name"/>
+	</resultMap>
+
+	<resultMap id="goodsSpecVoMap" type="com.joolun.cloud.mall.common.vo.GoodsSpecLeafVO">
+		<id property="id" column="id"/>
+		<result property="value" column="spec_value_name"/>
+	</resultMap>
+
+	<sql id="goodsSkuSpecValueSql2">
+		ssv.`id`,
+		ssv.`tenant_id`,
+		ssv.`spu_id`,
+		ssv.`sku_id`,
+		ssv.`spec_value_id`,
+		ssv.`create_time`,
+		ssv.`update_time`,
+		gsv.`spec_id`,
+		gsv.`name` AS `spec_value_name`
+	</sql>
+
+	<select id="listGoodsSkuSpecValueBySkuId" resultMap="goodsSkuSpecValueMap2">
+		SELECT
+		<include refid="goodsSkuSpecValueSql2"/>
+		FROM
+		goods_sku_spec_value ssv
+		LEFT JOIN `goods_spec_value` gsv
+		ON gsv.`id` = ssv.`spec_value_id`
+		WHERE ssv.`sku_id` = #{skuId}
+	</select>
+
+	<select id="selectBySpecId" resultMap="goodsSpecVoMap">
+		SELECT
+		  gsv.`id`,
+		  gsv.`name` AS spec_value_name
+		FROM
+			goods_sku_spec_value ssv
+			LEFT JOIN `goods_spec_value` gsv
+			  ON gsv.`id` = ssv.`spec_value_id`
+		  WHERE gsv.`spec_id` = #{specId}
+		  AND ssv.`spu_id` = #{spuId}
+		  GROUP BY gsv.`id`
+	</select>
+</mapper>

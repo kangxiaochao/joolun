@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.NoticeMapper">
+	<resultMap id="noticeMap" type="com.joolun.cloud.mall.common.entity.Notice">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="name" column="name"/>
+		<result property="remarks" column="remarks"/>
+		<result property="enable" column="enable"/>
+		<result property="type" column="type"/>
+		<result property="appId" column="app_id"/>
+	</resultMap>
+
+	<resultMap id="noticeMap2" extends="noticeMap" type="com.joolun.cloud.mall.common.entity.Notice">
+		<collection property="listNoticeItem" ofType="com.joolun.cloud.mall.common.entity.NoticeItem"
+					select="com.joolun.cloud.mall.admin.mapper.NoticeItemMapper.selectList2"
+					column="{query.noticeId=id,query.enable=enable}">
+		</collection>
+	</resultMap>
+
+	<sql id="noticeSql">
+		obj.`id`,
+		obj.`tenant_id`,
+		obj.`del_flag`,
+		obj.`create_time`,
+		obj.`update_time`,
+		obj.`create_id`,
+		obj.`name`,
+		obj.`remarks`,
+		obj.`enable`,
+		obj.`type`,
+		obj.`app_id`
+	</sql>
+
+	<!--重写getOne关联查询其它表-->
+	<select id="getOne2" resultMap="noticeMap2">
+		SELECT
+		<include refid="noticeSql"/>
+		FROM notice obj
+		<where>
+			<if test="query.id != null">
+				AND obj.`id` = #{query.id}
+			</if>
+			<if test="query.enable != null">
+				AND obj.`enable` = #{query.enable}
+			</if>
+			<if test="query.type != null">
+				AND obj.`type` = #{query.type}
+			</if>
+			<if test="query.appId != null">
+				AND obj.`app_id` = #{query.appId}
+			</if>
+		</where>
+	</select>
+</mapper>

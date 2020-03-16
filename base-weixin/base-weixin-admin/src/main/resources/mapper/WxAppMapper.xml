@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.weixin.admin.mapper.WxAppMapper">
+
+	<resultMap id="wxAppMap" type="com.joolun.cloud.weixin.common.entity.WxApp">
+		<id property="id" column="id"/>
+		<result property="createId" column="create_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateId" column="update_id"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="organId" column="organ_id"/>
+		<result property="weixinSign" column="weixin_sign"/>
+		<result property="appType" column="app_type"/>
+		<result property="secret" column="secret"/>
+		<result property="token" column="token"/>
+		<result property="aesKey" column="aes_key"/>
+		<result property="name" column="name"/>
+		<result property="weixinType" column="weixin_type"/>
+		<result property="weixinHao" column="weixin_hao"/>
+		<result property="logo" column="logo"/>
+		<result property="qrCode" column="qr_code"/>
+		<result property="community" column="community"/>
+		<result property="remarks" column="remarks"/>
+		<result property="vipCardId" column="vip_card_id"/>
+		<result property="verifyType" column="verify_type"/>
+		<result property="principalName" column="principal_name"/>
+		<result property="isComponent" column="is_component"/>
+		<result property="mchId" column="mch_id"/>
+		<result property="mchKey" column="mch_key"/>
+		<result property="keyPath" column="key_path"/>
+	</resultMap>
+
+	<sql id="wxAppSql">
+		  wa.`id`,
+		  wa.`create_id`,
+		  wa.`create_time`,
+		  wa.`update_id`,
+		  wa.`update_time`,
+		  wa.`del_flag`,
+		  wa.`tenant_id`,
+		  wa.`weixin_sign`,
+		  wa.`app_type`,
+		  wa.`secret`,
+		  wa.`token`,
+		  wa.`aes_key`,
+		  wa.`name`,
+		  wa.`is_component`,
+		  wa.`weixin_type`,
+		  wa.`weixin_hao`,
+		  wa.`verify_type`,
+		  wa.`logo`,
+		  wa.`qr_code`,
+		  wa.`principal_name`,
+		  wa.`community`,
+		  wa.`remarks`,
+		  wa.`vip_card_id`,
+		  wa.`mch_id`,
+		  wa.`mch_key`,
+		  wa.`key_path`
+	</sql>
+
+	<!--不需要租户信息约束的sql-->
+	<select id="findByWeixinSign" resultMap="wxAppMap">
+		SELECT
+			<include refid="wxAppSql"/>
+		FROM
+		wx_app wa
+		WHERE wa.`weixin_sign` = #{weixinSign}
+	</select>
+	<!--不需要租户信息约束的sql-->
+	<select id="findByAppId" resultMap="wxAppMap">
+		SELECT
+		<include refid="wxAppSql"/>
+		FROM
+		wx_app wa
+		WHERE wa.`id` = #{appId}
+	</select>
+</mapper>

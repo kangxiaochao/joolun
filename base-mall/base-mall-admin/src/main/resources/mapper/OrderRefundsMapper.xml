@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.OrderRefundsMapper">
+
+	<resultMap id="orderRefundsMap" type="com.joolun.cloud.mall.common.entity.OrderRefunds">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="orderId" column="order_id"/>
+		<result property="orderItemId" column="order_item_id"/>
+		<result property="status" column="status"/>
+		<result property="refundAmount" column="refund_amount"/>
+		<result property="refundTradeNo" column="refund_trade_no"/>
+		<result property="refundReson" column="refund_reson"/>
+		<result property="refuseRefundReson" column="refuse_refund_reson"/>
+	</resultMap>
+
+	<resultMap id="orderRefundsMap2" extends="orderRefundsMap" type="com.joolun.cloud.mall.common.entity.OrderRefunds">
+		<collection property="orderInfo" ofType="com.joolun.cloud.mall.common.entity.OrderInfo"
+					select="com.joolun.cloud.mall.admin.mapper.OrderInfoMapper.selectById"
+					column="{id=order_id}">
+		</collection>
+		<collection property="orderItem" ofType="com.joolun.cloud.mall.common.entity.OrderItem"
+					select="com.joolun.cloud.mall.admin.mapper.OrderItemMapper.selectById"
+					column="{id=order_item_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="orderRefundsSql">
+		obj.`id`,
+		obj.`tenant_id`,
+		obj.`del_flag`,
+		obj.`create_time`,
+		obj.`update_time`,
+		obj.`create_id`,
+		obj.`order_id`,
+		obj.`order_item_id`,
+		obj.`status`,
+		obj.`refund_amount`,
+		obj.`refund_trade_no`,
+		obj.`refund_reson`,
+		obj.`refuse_refund_reson`
+	</sql>
+
+	<select id="selectList2" resultMap="orderRefundsMap">
+		SELECT
+		<include refid="orderRefundsSql"/>
+		FROM order_refunds obj
+		<where>
+			<if test="query.orderId != null">
+				AND obj.`order_id` = #{query.orderId}
+			</if>
+			<if test="query.orderItemId != null">
+				AND obj.`order_item_id` = #{query.orderItemId}
+			</if>
+		</where>
+		ORDER BY obj.`create_time` desc
+	</select>
+
+	<select id="selectPage1" resultMap="orderRefundsMap2">
+		SELECT
+		<include refid="orderRefundsSql"/>
+		FROM order_refunds obj
+		<where>
+			<if test="query.status != null">
+				AND obj.`status` = #{query.status}
+			</if>
+		</where>
+	</select>
+</mapper>

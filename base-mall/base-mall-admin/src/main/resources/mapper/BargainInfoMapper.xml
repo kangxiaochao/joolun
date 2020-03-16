@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.BargainInfoMapper">
+
+	<resultMap id="bargainInfoMap" type="com.joolun.cloud.mall.common.entity.BargainInfo">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="sort" column="sort"/>
+		<result property="enable" column="enable"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="skuId" column="sku_id"/>
+		<result property="name" column="name"/>
+		<result property="validBeginTime" column="valid_begin_time"/>
+		<result property="validEndTime" column="valid_end_time"/>
+		<result property="bargainPrice" column="bargain_price"/>
+		<result property="selfCut" column="self_cut"/>
+		<result property="floorBuy" column="floor_buy"/>
+		<result property="launchNum" column="launch_num"/>
+		<result property="cutMax" column="cut_max"/>
+		<result property="cutMin" column="cut_min"/>
+		<result property="cutRule" column="cut_rule"/>
+		<result property="shareTitle" column="share_title"/>
+		<result property="picUrl" column="pic_url"/>
+	</resultMap>
+
+	<resultMap id="bargainInfoMap2" extends="bargainInfoMap" type="com.joolun.cloud.mall.common.entity.BargainInfo">
+		<collection property="goodsSpu" ofType="com.joolun.cloud.mall.common.entity.GoodsSpu"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSpuMapper.selectOneByShoppingCart"
+					column="{id=spu_id}">
+		</collection>
+		<collection property="goodsSku" ofType="com.joolun.cloud.mall.common.entity.GoodsSku"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSkuMapper.selectById"
+					column="{id=sku_id}">
+		</collection>
+	</resultMap>
+
+	<resultMap id="bargainInfoMap3" extends="bargainInfoMap" type="com.joolun.cloud.mall.common.entity.BargainInfo">
+		<result property="bargainUser.id" column="bargain_user_id"/>
+		<result property="bargainUser.userId" column="user_id"/>
+		<result property="bargainUser.status" column="status"/>
+		<result property="bargainUser.validBeginTime" column="valid_begin_time2"/>
+		<result property="bargainUser.validEndTime" column="valid_end_time2"/>
+		<result property="bargainUser.floorBuy" column="floor_buy2"/>
+		<result property="bargainUser.isBuy" column="is_buy"/>
+		<result property="bargainUser.orderId" column="order_id"/>
+		<collection property="goodsSpu" ofType="com.joolun.cloud.mall.common.entity.GoodsSpu"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSpuMapper.selectById4"
+					column="{id=spu_id}">
+		</collection>
+		<collection property="goodsSku" ofType="com.joolun.cloud.mall.common.entity.GoodsSku"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSkuMapper.getGoodsSkuById"
+					column="{id=sku_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="bargainInfoSql">
+		bargain_info.`id`,
+		bargain_info.`tenant_id`,
+		bargain_info.`del_flag`,
+		bargain_info.`create_time`,
+		bargain_info.`update_time`,
+		bargain_info.`create_id`,
+		bargain_info.`sort`,
+		bargain_info.`enable`,
+		bargain_info.`spu_id`,
+		bargain_info.`sku_id`,
+		bargain_info.`name`,
+		bargain_info.`valid_begin_time`,
+		bargain_info.`valid_end_time`,
+		bargain_info.`bargain_price`,
+		bargain_info.`self_cut`,
+		bargain_info.`floor_buy`,
+		bargain_info.`launch_num`,
+		bargain_info.`cut_max`,
+		bargain_info.`cut_min`,
+		bargain_info.`cut_rule`,
+		bargain_info.`share_title`,
+		bargain_info.`pic_url`
+	</sql>
+
+	<select id="selectById2" resultMap="bargainInfoMap2">
+		SELECT
+			<include refid="bargainInfoSql"/>
+		FROM bargain_info bargain_info
+			WHERE bargain_info.`id` = #{id}
+	</select>
+
+	<select id="selectPage2" resultMap="bargainInfoMap2">
+		SELECT
+			<include refid="bargainInfoSql"/>
+			FROM bargain_info bargain_info
+		<where>
+			AND bargain_info.`enable` = '1'
+			AND bargain_info.`valid_end_time` > now()
+			AND now() > bargain_info.`valid_begin_time`
+		</where>
+	</select>
+
+	<select id="selectOne2" resultMap="bargainInfoMap3">
+		SELECT
+			<include refid="bargainInfoSql"/>
+			<if test="query2.userId != null or query2.id != null">
+				,bargain_user.`id` bargain_user_id,
+				bargain_user.`user_id`,
+				bargain_user.`status`,
+				bargain_user.`valid_begin_time` as valid_begin_time2,
+				bargain_user.`valid_end_time` as valid_end_time2,
+				bargain_user.`floor_buy` as floor_buy2,
+				bargain_user.`is_buy`,
+				bargain_user.`order_id`
+			</if>
+			<if test="query2.userId == null and query2.id == null">
+				,null bargain_user_id,
+				null user_id,
+				null status,
+				null valid_begin_time2,
+				null valid_end_time2,
+				null floor_buy2,
+				null is_buy,
+				null order_id
+			</if>
+		FROM bargain_info bargain_info
+		<if test="query2.userId != null">
+			LEFT JOIN bargain_user bargain_user
+			ON bargain_info.`id` = bargain_user.`bargain_id`
+			<if test="query2.id != null">
+				AND bargain_user.`id` = #{query2.id}
+			</if>
+			<if test="query2.id == null">
+				AND bargain_user.`user_id` = #{query2.userId}
+			</if>
+		</if>
+		<where>
+			<if test="query2.bargainId != null">
+				AND bargain_info.`id` = #{query2.bargainId}
+			</if>
+		</where>
+	</select>
+</mapper>

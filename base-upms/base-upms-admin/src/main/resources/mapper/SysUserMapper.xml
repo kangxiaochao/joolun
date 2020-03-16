@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joolun.cloud.upms.admin.mapper.SysUserMapper">
+	<resultMap id="sysUserMap" type="com.joolun.cloud.upms.common.entity.SysUser">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="email" property="email"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="wx_openid" property="wxOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="ucreate_time" property="createTime"/>
+		<result column="uupdate_time" property="updateTime"/>
+		<result column="lock_flag" property="lockFlag"/>
+		<result column="udel_flag" property="delFlag"/>
+		<result column="organ_id" property="organId"/>
+		<result column="tenant_id" property="tenantId"/>
+	</resultMap>
+
+
+	<resultMap id="baseResultMap" type="com.joolun.cloud.upms.common.vo.UserVO">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="email" property="email"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="wx_openid" property="wxOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="ucreate_time" property="createTime"/>
+		<result column="uupdate_time" property="updateTime"/>
+		<result column="lock_flag" property="lockFlag"/>
+		<result column="udel_flag" property="delFlag"/>
+		<result column="organ_id" property="organId"/>
+		<result column="tenant_id" property="tenantId"/>
+		<result column="organName" property="organName"/>
+		<collection property="roleIds" ofType="java.lang.String"
+					select="com.joolun.cloud.upms.admin.mapper.SysRoleMapper.listRoleIdsByUserId" column="id">
+		</collection>
+	</resultMap>
+
+	<!-- userVo结果集 -->
+	<resultMap id="userVoResultMap" type="com.joolun.cloud.upms.common.vo.UserVO">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="email" property="email"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="wx_openid" property="wxOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="ucreate_time" property="createTime"/>
+		<result column="uupdate_time" property="updateTime"/>
+		<result column="lock_flag" property="lockFlag"/>
+		<result column="udel_flag" property="delFlag"/>
+		<result column="organ_id" property="organId"/>
+		<result column="tenant_id" property="tenantId"/>
+		<result column="organName" property="organName"/>
+		<collection property="roleList" ofType="com.joolun.cloud.upms.common.entity.SysRole">
+			<id column="id" property="id"/>
+			<result column="role_name" property="roleName"/>
+			<result column="role_code" property="roleCode"/>
+			<result column="role_desc" property="roleDesc"/>
+			<result column="rcreate_time" property="createTime"/>
+			<result column="rupdate_time" property="updateTime"/>
+		</collection>
+	</resultMap>
+
+	<sql id="userRoleSql">
+		`user`.id,
+		`user`.username,
+		`user`.email,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.wx_openid,
+		`user`.qq_openid,
+		`user`.organ_id,
+		`user`.create_time AS ucreate_time,
+		`user`.update_time AS uupdate_time,
+		`user`.del_flag AS udel_flag,
+		`user`.lock_flag AS lock_flag,
+		`user`.organ_id,
+		`user`.tenant_id,
+		r.id,
+		r.role_name,
+		r.role_code,
+		r.role_desc,
+		r.create_time AS rcreate_time,
+		r.update_time AS rupdate_time
+	</sql>
+
+	<sql id="userRoleOrganSql">
+		`user`.id,
+		`user`.username,
+		`user`.email,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.wx_openid,
+		`user`.qq_openid,
+		`user`.create_time AS ucreate_time,
+		`user`.update_time AS uupdate_time,
+		`user`.del_flag AS udel_flag,
+		`user`.lock_flag AS lock_flag,
+		`user`.tenant_id,
+		r.id,
+		r.role_name,
+		r.role_code,
+		r.role_desc,
+		r.create_time AS rcreate_time,
+		r.update_time AS rupdate_time,
+		d.name AS organName,
+		d.id AS organId
+    </sql>
+
+	<select id="getByNoTenant" resultMap="sysUserMap">
+		SELECT
+			`user`.id,
+			`user`.username,
+			`user`.email,
+			`user`.`password`,
+			`user`.salt,
+			`user`.phone,
+			`user`.avatar,
+			`user`.wx_openid,
+			`user`.qq_openid,
+			`user`.organ_id,
+			`user`.create_time AS ucreate_time,
+			`user`.update_time AS uupdate_time,
+			`user`.del_flag AS udel_flag,
+			`user`.lock_flag AS lock_flag,
+			`user`.organ_id,
+			`user`.tenant_id
+		FROM
+			sys_user AS `user`
+		<where>
+			<if test="username != null and username != ''">
+				and `user`.username = #{username}
+			</if>
+			<if test="email != null and email != ''">
+				and `user`.email = #{email}
+			</if>
+		</where>
+	</select>
+
+	<select id="getUserVoByUsername" resultMap="userVoResultMap">
+		SELECT
+			<include refid="userRoleSql"/>
+		FROM
+		sys_user AS `user`
+		LEFT JOIN sys_user_role AS ur ON ur.user_id = `user`.id
+		LEFT JOIN sys_role AS r ON r.id = ur.role_id
+			WHERE `user`.username = #{username}
+	</select>
+
+	<select id="getUserVoById" resultMap="userVoResultMap">
+        SELECT
+	   		<include refid="userRoleOrganSql"/>
+        FROM
+            sys_user AS `user`
+            LEFT JOIN sys_user_role AS ur ON ur.user_id = `user`.id
+            LEFT JOIN sys_role AS r ON r.id = ur.role_id
+            LEFT JOIN sys_organ AS d ON d.id = `user`.organ_id
+        WHERE
+           `user`.id = #{id}
+    </select>
+
+	<select id="getUserVosPage" resultMap="baseResultMap">
+		SELECT
+		`user`.id,
+		`user`.username,
+		`user`.email,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.wx_openid,
+		`user`.qq_openid,
+		`user`.organ_id,
+		`user`.create_time AS ucreate_time,
+		`user`.update_time AS uupdate_time,
+		`user`.del_flag AS udel_flag,
+		`user`.lock_flag AS lock_flag,
+		`user`.tenant_id,
+		d.name AS organName
+		FROM
+		sys_user AS `user`
+		LEFT JOIN sys_organ AS d ON d.id = `user`.organ_id
+		<where>
+			<if test="query.username != null and query.username != ''">
+				and `user`.username LIKE CONCAT('%',#{query.username},'%')
+			</if>
+			<if test="query.organId != null and query.organId != ''">
+				and `user`.organ_id IN (SELECT `descendant` FROM `sys_organ_relation` WHERE `ancestor` = #{query.organId})
+			</if>
+		</where>
+		ORDER BY `user`.create_time DESC
+	</select>
+</mapper>

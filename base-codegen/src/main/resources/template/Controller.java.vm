@@ -1,0 +1,97 @@
+/**
+ * Copyright (C) 2018-2019
+ * All rights reserved, Designed By www.joolun.com
+ * 注意：
+ * 本软件为www.joolun.com开发研制，未经购买不得使用
+ * 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+ * 一经发现盗用、分享等行为，将追究法律责任，后果自负
+ */
+package ${package}.${moduleName}.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.joolun.cloud.common.core.util.R;
+import com.joolun.cloud.common.log.annotation.SysLog;
+import ${package}.${moduleName}.entity.${className};
+import ${package}.${moduleName}.service.${className}Service;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.annotations.Api;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Slf4j
+@RestController
+@AllArgsConstructor
+@RequestMapping("/${pathName}")
+@Api(value = "${pathName}", tags = "${comments}管理")
+public class ${className}Controller {
+
+    private final ${className}Service ${classname}Service;
+
+    /**
+     * 分页列表
+     * @param page 分页对象
+     * @param ${classname} ${comments}
+     * @return
+     */
+    @GetMapping("/page")
+    @PreAuthorize("@ato.hasAuthority('${moduleName}_${pathName}_index')")
+    public R getPage(Page page, ${className} ${classname}) {
+        return R.ok(${classname}Service.page(page, Wrappers.query(${classname})));
+    }
+
+    /**
+     * ${comments}查询
+     * @param ${pk.lowerAttrName}
+     * @return R
+     */
+    @GetMapping("/{${pk.lowerAttrName}}")
+    @PreAuthorize("@ato.hasAuthority('${moduleName}_${pathName}_get')")
+    public R getById(@PathVariable("${pk.lowerAttrName}") ${pk.attrType} ${pk.lowerAttrName}) {
+        return R.ok(${classname}Service.getById(${pk.lowerAttrName}));
+    }
+
+    /**
+     * ${comments}新增
+     * @param ${classname} ${comments}
+     * @return R
+     */
+    @SysLog("新增${comments}")
+    @PostMapping
+    @PreAuthorize("@ato.hasAuthority('${moduleName}_${pathName}_add')")
+    public R save(@RequestBody ${className} ${classname}) {
+        return R.ok(${classname}Service.save(${classname}));
+    }
+
+    /**
+     * ${comments}修改
+     * @param ${classname} ${comments}
+     * @return R
+     */
+    @SysLog("修改${comments}")
+    @PutMapping
+    @PreAuthorize("@ato.hasAuthority('${moduleName}_${pathName}_edit')")
+    public R updateById(@RequestBody ${className} ${classname}) {
+        return R.ok(${classname}Service.updateById(${classname}));
+    }
+
+    /**
+     * ${comments}删除
+     * @param ${pk.lowerAttrName}
+     * @return R
+     */
+    @SysLog("删除${comments}")
+    @DeleteMapping("/{${pk.lowerAttrName}}")
+    @PreAuthorize("@ato.hasAuthority('${moduleName}_${pathName}_del')")
+    public R removeById(@PathVariable ${pk.attrType} ${pk.lowerAttrName}) {
+        return R.ok(${classname}Service.removeById(${pk.lowerAttrName}));
+    }
+
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.lianghao.mapper.LhPackageMapper">
+
+	<resultMap id="lhPackageMap" type="com.joolun.cloud.lianghao.entity.LhPackage">
+		<id property="id" column="id"/>
+		<result property="packageName" column="package_name"/>
+		<result property="operatorId" column="operator_id"/>
+		<result property="cardType" column="card_type"/>
+		<result property="prestore" column="prestore"/>
+		<result property="minCharge" column="min_charge"/>
+		<result property="monthlyRent" column="monthly_rent"/>
+		<result property="willChoosePackage" column="will_choose_package"/>
+		<result property="domesticVoice" column="domestic_voice"/>
+		<result property="flow" column="flow"/>
+		<result property="note" column="note"/>
+		<result property="caller" column="caller"/>
+		<result property="miniDailyFlow" column="mini_daily_flow"/>
+		<result property="packageDes" column="package_des"/>
+		<result property="remark" column="remark"/>
+	</resultMap>
+	<select id="selectPackage" resultType="java.util.HashMap">
+    	select CONCAT(id,'-',package_name) as value,id,package_name as label from lh_package
+    </select>
+</mapper>

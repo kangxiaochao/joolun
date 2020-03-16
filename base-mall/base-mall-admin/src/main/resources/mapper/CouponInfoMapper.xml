@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.CouponInfoMapper">
+
+	<resultMap id="couponInfoMap" type="com.joolun.cloud.mall.common.entity.CouponInfo">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createId" column="create_id"/>
+		<result property="sort" column="sort"/>
+		<result property="name" column="name"/>
+		<result property="type" column="type"/>
+		<result property="premiseAmount" column="premise_amount"/>
+		<result property="expireType" column="expire_type"/>
+		<result property="stock" column="stock"/>
+		<result property="reduceAmount" column="reduce_amount"/>
+		<result property="discount" column="discount"/>
+		<result property="validDays" column="valid_days"/>
+		<result property="validBeginTime" column="valid_begin_time"/>
+		<result property="validEndTime" column="valid_end_time"/>
+		<result property="suitType" column="suit_type"/>
+		<result property="remarks" column="remarks"/>
+		<result property="enable" column="enable"/>
+		<result property="version" column="version"/>
+	</resultMap>
+
+	<resultMap id="couponInfoMap2" extends="couponInfoMap" type="com.joolun.cloud.mall.common.entity.CouponInfo">
+		<collection property="listGoodsSpu" ofType="com.joolun.cloud.mall.common.entity.GoodsSpu"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSpuMapper.selectListByCouponId"
+					column="{couponId=id}">
+		</collection>
+	</resultMap>
+
+	<resultMap id="couponInfoMap3" extends="couponInfoMap" type="com.joolun.cloud.mall.common.entity.CouponInfo">
+		<result property="couponUser.id" column="coupon_user_id"/>
+	</resultMap>
+
+	<sql id="couponInfoSql">
+		coupon_info.`id`,
+		coupon_info.`tenant_id`,
+		coupon_info.`del_flag`,
+		coupon_info.`create_time`,
+		coupon_info.`update_time`,
+		coupon_info.`create_id`,
+		coupon_info.`sort`,
+		coupon_info.`name`,
+		coupon_info.`type`,
+		coupon_info.`premise_amount`,
+		coupon_info.`expire_type`,
+		coupon_info.`stock`,
+		coupon_info.`reduce_amount`,
+		coupon_info.`discount`,
+		coupon_info.`valid_days`,
+		coupon_info.`valid_begin_time`,
+		coupon_info.`valid_end_time`,
+		coupon_info.`suit_type`,
+		coupon_info.`remarks`,
+		coupon_info.`enable`,
+		coupon_info.`version`
+	</sql>
+
+	<select id="selectById2" resultMap="couponInfoMap2">
+		SELECT
+		<include refid="couponInfoSql"/>
+		FROM coupon_info coupon_info
+		WHERE coupon_info.`id` = #{id}
+	</select>
+
+	<select id="selectPage2" resultMap="couponInfoMap3">
+		SELECT
+			<include refid="couponInfoSql"/>
+			<if test="query3.userId != null">
+				,coupon_user.`id` coupon_user_id
+			</if>
+			<if test="query3.userId == null">
+				,null coupon_user_id
+			</if>
+		FROM coupon_info coupon_info
+		<if test="query2.spuId != null">
+			LEFT JOIN coupon_goods coupon_goods
+			ON coupon_info.`id` = coupon_goods.`coupon_id`
+		</if>
+		<if test="query3.userId != null">
+			LEFT JOIN coupon_user coupon_user
+			ON coupon_info.`id` = coupon_user.`coupon_id`
+			AND coupon_user.`user_id` = #{query3.userId}
+			AND coupon_user.`status` = '0'
+			AND coupon_user.`valid_end_time` > now()
+		</if>
+		<where>
+			AND coupon_info.`enable` = '1'
+			AND (
+				coupon_info.`expire_type` = '1'
+				OR
+				(coupon_info.`expire_type` = '2' AND coupon_info.`valid_end_time` > now())
+			)
+			AND coupon_info.`stock` > 0
+			<if test="query2.spuId != null">
+				AND (
+					coupon_info.`suit_type` = '1'
+					OR
+					(coupon_info.`suit_type` = '2' AND coupon_goods.`spu_id` = #{query2.spuId})
+				)
+			</if>
+		</where>
+	</select>
+</mapper>

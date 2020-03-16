@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.GoodsAppraisesMapper">
+
+	<resultMap id="goodsAppraisesMap" type="com.joolun.cloud.mall.common.entity.GoodsAppraises">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="orderId" column="order_id"/>
+		<result property="orderItemId" column="order_item_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="nickName" column="nick_name"/>
+		<result property="headimgUrl" column="headimg_url"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="skuId" column="sku_id"/>
+		<result property="picUrls" column="pic_urls"/>
+		<result property="specInfo" column="spec_info"/>
+		<result property="goodsScore" column="goods_score"/>
+		<result property="serviceScore" column="service_score"/>
+		<result property="logisticsScore" column="logistics_score"/>
+		<result property="content" column="content"/>
+		<result property="sellerReply" column="seller_reply"/>
+		<result property="replyTime" column="reply_time"/>
+	</resultMap>
+
+	<resultMap id="goodsAppraisesMap2" extends="goodsAppraisesMap" type="com.joolun.cloud.mall.common.entity.GoodsAppraises">
+		<collection property="goodsSpu" ofType="com.joolun.cloud.mall.common.entity.GoodsSpu"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSpuMapper.selectById2"
+					column="{id=spu_id}">
+		</collection>
+		<collection property="orderInfo" ofType="com.joolun.cloud.mall.common.entity.OrderInfo"
+					select="com.joolun.cloud.mall.admin.mapper.OrderInfoMapper.selectById2"
+					column="{id=order_id}">
+		</collection>
+		<collection property="orderItem" ofType="com.joolun.cloud.mall.common.entity.OrderItem"
+					select="com.joolun.cloud.mall.admin.mapper.OrderItemMapper.selectById2"
+					column="{id=order_item_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="goodsAppraisesSql">
+		goods_appraises.`id`,
+		goods_appraises.`tenant_id`,
+		goods_appraises.`create_time`,
+		goods_appraises.`update_time`,
+		goods_appraises.`del_flag`,
+		goods_appraises.`order_id`,
+		goods_appraises.`order_item_id`,
+		goods_appraises.`user_id`,
+		goods_appraises.`nick_name`,
+		goods_appraises.`headimg_url`,
+		goods_appraises.`spu_id`,
+		goods_appraises.`sku_id`,
+		goods_appraises.`pic_urls`,
+		goods_appraises.`spec_info`,
+		goods_appraises.`goods_score`,
+		goods_appraises.`service_score`,
+		goods_appraises.`logistics_score`,
+		goods_appraises.`content`,
+		goods_appraises.`seller_reply`,
+		goods_appraises.`reply_time`
+	</sql>
+
+	<select id="selectPage1" resultMap="goodsAppraisesMap2">
+		SELECT
+		<include refid="goodsAppraisesSql"/>
+		FROM goods_appraises goods_appraises
+		<where>
+			<if test="query.userId != null">
+				AND goods_appraises.`user_id` = #{query.userId}
+			</if>
+			<if test="query.spuId != null">
+				AND goods_appraises.`spu_id` = #{query.spuId}
+			</if>
+		</where>
+	</select>
+</mapper>

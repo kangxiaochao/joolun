@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.GoodsSkuMapper">
+
+	<resultMap id="goodsSkuMap" type="com.joolun.cloud.mall.common.entity.GoodsSku">
+		<id property="id" column="id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="skuCode" column="sku_code"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="picUrl" column="pic_url"/>
+		<result property="salesPrice" column="sales_price"/>
+		<result property="marketPrice" column="market_price"/>
+		<result property="costPrice" column="cost_price"/>
+		<result property="stock" column="stock"/>
+		<result property="weight" column="weight"/>
+		<result property="volume" column="volume"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="seckillStatus" column="seckill_status"/>
+		<result property="seckillPrice" column="seckill_Price"/>
+		<result property="seckillStartTime" column="seckill_start_time"/>
+		<result property="seckillEndTime" column="seckill_end_time"/>
+		<result property="enable" column="enable"/>
+		<result property="auctionStatus" column="auction_status"/>
+		<result property="auctionPrice" column="auction_price"/>
+		<result property="auctionAddPrice" column="auction_add_price"/>
+		<result property="auctionStartTime" column="auction_start_time"/>
+		<result property="auctionEndTime" column="auction_end_time"/>
+		<result property="auctionCashDeposit" column="auction_cash_deposit"/>
+	</resultMap>
+
+	<resultMap id="seckillGoods" type="com.joolun.cloud.mall.common.vo.SeckillGoods">
+		<id property="spuId" column="spu_id"/>
+		<result property="skuId" column="sku_id"/>
+		<result property="spuName" column="spu_name"/>
+		<result property="sellPoint" column="sell_point"/>
+		<result property="category" column="category"/>
+		<result property="phoneSystem" column="phone_system"/>
+		<result property="lowDissipation" column="low_dissipation"/>
+		<result property="operatorName" column="operator_name"/>
+		<result property="packageName" column="package_name"/>
+		<result property="attributionProvince" column="attribution_province"/>
+		<result property="attributionCity" column="attribution_city"/>
+		<result property="seckillPrice" column="seckill_price"/>
+		<result property="seckillStartTime" column="seckill_start_time"/>
+		<result property="seckillEndTime" column="seckill_end_time"/>
+		<result property="picUrls" column="pic_urls"/>
+	</resultMap>
+
+	<resultMap id="goodsSkuMap2" extends="goodsSkuMap" type="com.joolun.cloud.mall.common.entity.GoodsSku">
+		<collection property="specs" ofType="com.joolun.cloud.mall.common.entity.GoodsSkuSpecValue"
+					select="com.joolun.cloud.mall.admin.mapper.GoodsSkuSpecValueMapper.listGoodsSkuSpecValueBySkuId"
+					column="{skuId=id}">
+		</collection>
+	</resultMap>
+
+	<sql id="goodsSkuSql">
+		sku.`id`,
+		sku.`create_time`,
+		sku.`update_time`,
+		sku.`tenant_id`,
+		sku.`sku_code`,
+		sku.`spu_id`,
+		sku.`pic_url`,
+		sku.`sales_price`,
+		sku.`market_price`,
+		sku.`cost_price`,
+		sku.`stock`,
+		sku.`weight`,
+		sku.`volume`,
+		sku.`del_flag`,
+		sku.`seckill_status`,
+		sku.`seckill_Price`,
+		sku.`seckill_start_time`,
+		sku.`seckill_end_time`,
+		sku.`auction_status`,
+		sku.`auction_price`,
+		sku.`auction_add_price`,
+		sku.`auction_cash_deposit`,
+		sku.`auction_start_time`,
+		sku.`auction_end_time`,
+		sku.`enable`
+	</sql>
+
+	<sql id="seckillGoods">
+		spu.`id` AS spu_id,
+		sku.`id` AS sku_id,
+		spu.`name` AS spu_name,
+		spu.`sell_point`,
+		category.`name` AS category,
+		spu.`phone_system`,
+		spu.`low_dissipation`,
+		spu.`operator_name`,
+		spu.`package_name`,
+		spu.`attribution_province`,
+		spu.`attribution_city`,
+		sku.`seckill_price`,
+		sku.`seckill_start_time`,
+		sku.`seckill_end_time`,
+		spu.`pic_urls`
+	</sql>
+
+	<select id="getGoodsSkuById" resultMap="goodsSkuMap2">
+		SELECT
+		<include refid="goodsSkuSql"/>
+		FROM
+		goods_sku sku
+		WHERE sku.`id` = #{id}
+	</select>
+
+	<select id="listGoodsSkuBySpuId" resultMap="goodsSkuMap2">
+		SELECT
+		<include refid="goodsSkuSql"/>
+		FROM
+		goods_sku sku
+		WHERE sku.`spu_id` = #{spuId}
+	</select>
+
+	<select id="selectOneByShoppingCart" resultMap="goodsSkuMap">
+		SELECT
+		<include refid="goodsSkuSql"/>
+		FROM
+		goods_sku sku
+		WHERE sku.`enable` = '1'
+			AND sku.`id` = #{id}
+	</select>
+	<select id="selectSpuForSeckill" resultMap="seckillGoods">
+		SELECT
+		<include refid="seckillGoods"/>
+		FROM
+		goods_sku sku
+		LEFT JOIN goods_spu spu ON sku.spu_id = spu.id
+		LEFT JOIN goods_category category ON spu.category_second = category.id
+		WHERE sku.`enable` = '1'
+			AND sku.`stock` > '0'
+			AND sku.`del_flag` = '0'
+			AND sku.`seckill_status` = '1'
+			AND spu.`shelf` = '1'
+	</select>
+</mapper>

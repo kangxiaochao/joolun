@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joolun.cloud.upms.admin.mapper.SysOrganRelationMapper">
+
+	<resultMap id="BaseResultMap" type="com.joolun.cloud.upms.common.entity.SysOrganRelation">
+		<id column="ancestor" property="ancestor"/>
+		<result column="descendant" property="descendant"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+        ancestor, descendant
+    </sql>
+
+	<!-- 更新机构关系 -->
+	<update id="updateOrganRelations">
+        DELETE FROM sys_organ_relation
+        WHERE
+        	descendant IN ( SELECT temp.descendant FROM
+        	( SELECT descendant FROM sys_organ_relation WHERE ancestor = #{descendant} ) temp )
+        AND ancestor IN ( SELECT temp.ancestor FROM ( SELECT ancestor FROM
+        	sys_organ_relation WHERE descendant = #{descendant} AND ancestor != descendant ) temp );
+
+		INSERT INTO sys_organ_relation (ancestor, descendant)
+		SELECT a.ancestor, b.descendant
+		FROM sys_organ_relation a
+			CROSS JOIN sys_organ_relation b
+		WHERE a.descendant = #{ancestor}
+			AND b.ancestor = #{descendant};
+	</update>
+
+	<!--删除机构-->
+	<delete id="deleteOrganRelationsById">
+        DELETE
+        FROM
+            sys_organ_relation
+        WHERE
+            descendant IN (
+                SELECT
+                    temp.descendant
+                FROM
+                    (
+                        SELECT
+                            descendant
+                        FROM
+                            sys_organ_relation
+                        WHERE
+                            ancestor = #{id}
+                    ) temp
+            )
+    </delete>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.mall.admin.mapper.PointsRecordMapper">
+	<resultMap id="pointsRecordMap" type="com.joolun.cloud.mall.common.entity.PointsRecord">
+		<id property="id" column="id"/>
+		<result property="tenantId" column="tenant_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="userId" column="user_id"/>
+		<result property="amount" column="amount"/>
+		<result property="description" column="description"/>
+		<result property="spuId" column="spu_id"/>
+		<result property="orderItemId" column="order_item_id"/>
+		<result property="recordType" column="record_type"/>
+	</resultMap>
+
+	<resultMap id="pointsRecordMap2" extends="pointsRecordMap" type="com.joolun.cloud.mall.common.entity.PointsRecord">
+		<collection property="userInfo" ofType="com.joolun.cloud.mall.common.entity.UserInfo"
+					select="com.joolun.cloud.mall.admin.mapper.UserInfoMapper.selectById"
+					column="{id=user_id}">
+		</collection>
+	</resultMap>
+
+	<sql id="pointsRecordSql">
+		points_record.`id`,
+		points_record.`tenant_id`,
+		points_record.`del_flag`,
+		points_record.`create_time`,
+		points_record.`update_time`,
+		points_record.`user_id`,
+		points_record.`amount`,
+		points_record.`description`,
+		points_record.`spu_id`,
+		points_record.`order_item_id`,
+		points_record.`record_type`
+	</sql>
+
+	<select id="selectPage1" resultMap="pointsRecordMap2">
+		SELECT
+		<include refid="pointsRecordSql"/>
+		FROM points_record points_record
+		<where>
+			<if test="query.userId != null">
+				AND points_record.`user_id` = #{query.userId}
+			</if>
+		</where>
+	</select>
+</mapper>

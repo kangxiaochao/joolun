@@ -1,0 +1,15 @@
+-- 请先按自己需求修改菜单ID对应关系，再执行
+
+-- 菜单
+insert into `sys_menu` ( `parent_id`, `component`, `permission`, `type`, `path`, `icon`, `menu_id`, `del_flag`, `create_time`, `sort`, `update_time`, `name`)
+    values ( '父菜单ID', 'views/${moduleName}/${pathName}/index', '${moduleName}_${pathName}_index', '0', '${pathName}', 'icon-bangzhushouji', '菜单ID', '0', '2018-01-20 13:17:19', '8', '2018-07-29 13:38:19', '${comments}管理');
+
+-- 菜单对应按钮
+insert into `sys_menu` ( `parent_id`, `component`, `permission`, `type`, `path`, `icon`, `menu_id`, `del_flag`, `create_time`, `sort`, `update_time`, `name`)
+    values ( '菜单ID', null, '${moduleName}_${pathName}_add', '1', null, '1', '子按钮ID1', '0', '2018-05-15 21:35:18', '0', '2018-07-29 13:38:59', '${comments}新增');
+insert into `sys_menu` ( `parent_id`, `component`, `permission`, `type`, `path`, `icon`, `menu_id`, `del_flag`, `create_time`, `sort`, `update_time`, `name`)
+    values ( '菜单ID', null, '${moduleName}_${pathName}_edit', '1', null, '1', '子按钮ID2', '0', '2018-05-15 21:35:18', '1', '2018-07-29 13:38:59', '${comments}修改');
+insert into `sys_menu` ( `parent_id`, `component`, `permission`, `type`, `path`, `icon`, `menu_id`, `del_flag`, `create_time`, `sort`, `update_time`, `name`)
+    values ( '菜单ID', null, '${moduleName}_${pathName}_del', '1', null, '1', '子按钮ID3', '0', '2018-05-15 21:35:18', '2', '2018-07-29 13:38:59', '${comments}删除');
+insert into `sys_menu` ( `parent_id`, `component`, `permission`, `type`, `path`, `icon`, `menu_id`, `del_flag`, `create_time`, `sort`, `update_time`, `name`)
+    values ( '菜单ID', null, '${moduleName}_${pathName}_get', '1', null, '1', '子按钮ID4', '0', '2018-05-15 21:35:18', '3', '2018-07-29 13:38:59', '${comments}详情');

@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.joolun.cloud.common.data.cache.RedisTemplateConfig,\
+    com.joolun.cloud.common.data.cache.RedisCacheManagerConfig,\
+    com.joolun.cloud.common.data.cache.RedisCacheAutoConfiguration,\
+    com.joolun.cloud.common.data.tenant.TenantConfigProperties,\
+    com.joolun.cloud.common.data.datascope.DataScopeProperties,\
+    com.joolun.cloud.common.data.tenant.TenantContextHolderFilter,\
+    com.joolun.cloud.common.data.tenant.BaseFeignTenantConfiguration,\
+    com.joolun.cloud.common.data.mybatis.MybatisPlusConfig

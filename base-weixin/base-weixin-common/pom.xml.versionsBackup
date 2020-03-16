@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.joolun</groupId>
+		<artifactId>base-weixin</artifactId>
+		<version>2.1.6</version>
+	</parent>
+
+	<artifactId>base-weixin-common</artifactId>
+	<packaging>jar</packaging>
+
+	<description>微信公共模块</description>
+
+	<dependencies>
+		<!--数据操作-->
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-data</artifactId>
+		</dependency>
+		<!--core 工具类-->
+		<dependency>
+			<groupId>com.joolun</groupId>
+			<artifactId>base-common-core</artifactId>
+		</dependency>
+		<!--weixin-java-admin-->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-common</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>
