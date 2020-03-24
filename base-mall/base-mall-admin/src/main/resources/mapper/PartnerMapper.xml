@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018-2019
+  ~ All rights reserved, Designed By www.joolun.com
+  ~ 注意：
+  ~ 本软件为www.joolun.com开发研制，未经购买不得使用
+  ~ 购买后可获得全部源代码（禁止转卖、分享、上传到码云、github等开源平台）
+  ~ 一经发现盗用、分享等行为，将追究法律责任，后果自负
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joolun.cloud.generator.mapper.PartnerMapper">
+
+    <resultMap id="partnerMap" type="com.joolun.cloud.mall.common.entity.Partner">
+                              <id property="id" column="id"/>
+                                        <result property="partnerName" column="partner_name"/>
+                                        <result property="agentName" column="agent_name"/>
+                                        <result property="appId" column="app_id"/>
+                                        <result property="userCode" column="user_code"/>
+                                        <result property="phone" column="phone"/>
+                                        <result property="commissionRate" column="commission_rate"/>
+                                        <result property="createTime" column="create_time"/>
+                                        <result property="updateTime" column="update_time"/>
+                                        <result property="creator" column="creator"/>
+                    </resultMap>
+
+    <sql id="partnerSql">
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+                    partner.`id`,
+            </sql>
+</mapper>
