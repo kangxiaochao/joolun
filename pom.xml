@@ -14,7 +14,7 @@
 	</organization>
 
 	<properties>
-		<spring-boot.version>2.1.10.RELEASE</spring-boot.version>
+		<spring-boot.version>2.5.12</spring-boot.version>
 		<spring-cloud-alibaba.version>2.1.0.RELEASE</spring-cloud-alibaba.version>
 		<spring-boot-admin.version>2.1.6</spring-boot-admin.version>
 		<spring-cloud.version>Greenwich.SR3</spring-cloud.version>
