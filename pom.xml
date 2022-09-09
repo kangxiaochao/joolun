@@ -42,7 +42,7 @@
 		<swagger.core.version>1.5.22</swagger.core.version>
 		<spring-boot-starter-websocket.version>2.1.5.RELEASE</spring-boot-starter-websocket.version>
 		<oh-my-email.version>0.0.4</oh-my-email.version>
-		<snakeyaml.version>1.24</snakeyaml.version>
+		<snakeyaml.version>1.26</snakeyaml.version>
 		<aliyun-sdk-oss.version>3.5.0</aliyun-sdk-oss.version>
 		<docker.version>1.2.0</docker.version>
 	</properties>
